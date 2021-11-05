@@ -1,0 +1,88 @@
+#day08_2
+
+String 클래스: 문자열을 관리해주는 클래스
+		
+	단점 ) 내용이 변경되면 데이터 자체를 다시 만드는 것이 아니고 객체를 다시 만들어서 기억시킨다
+				예 ) String srt = "abc";
+					 str + 123 = "abc123
+			   따라서, 내용변경이 빈번한 경우에는 메모리 소모가 심해진다
+	해결 ) StringBuffer, StringBuilder
+				> 이 클래스들은 문자열을 답고있지만 문자열 자체는 아님
+				> 따라서 마지막에 문자열 타입의 데이터가 필요하면 문자열로 변경해줘야함(toString)	   
+	참고 ) 간단한 문자열 처리는 자주 사용하느 클래스이므로 *클래스중 유일하게* 
+		   new 없이 사용 가능하다
+			   		> 예 ) String str = "홍길동";	> 이건 리터럴 데이터에 올라가는 주소를 기억
+			   			   String hong = new String("홍길동");	> 이건 변수 hong이 heap에 올라간 주소를 기억함
+			   			   	> 이때 문자열 데이터의 비교는 반드시 equals()로 비교해야함   
+			   			   	> equals() 안쓰면 주소를 비교해서 같은 홍길동임에도 다른것으로 봄
+			   String은 *유일하게* 함수를 이용하지 않고 연산자(+)를 이용해서 누적처리가 가능하다
+			   
+			   
+StringBuffer 클래스 : 문자열을 관리해주는 클래스
+					: String은 변화되는 내용이 각각 새로운 메모리에 기억되는데 
+					  StringBuffer는 이러한 문제점을 보완하기위해 만든 또하나의 문자열 관리 클래스이다
+					  다라서, 내용변화가 있으면 현재 메모리에 변화된 내용을 그대로 기억한다
+					  
+	참고 ) String과 달리 =(대입연산자)에 의한 문자열 기억이 불가능하다
+		   new 시켜서만 사용 가능하다
+	형식 ) StringBuffer 변수 = new StringBuffer("문자열");
+	문자열결합 ) 함수를 호출해서 처리
+					> 형식 ) 주소.append(문자열);
+							 > 기존 StringBuffer 데이터에 문자열을 덧붙여준다
+							 > 예 ) StringBuffer str = new StringBuffer("Hong");
+							 	    str.append("gildong");
+	실무에서의 사용법 ) 
+		1. String이 편하므로 일단 String으로 만들어놓는다
+		2. 만들어진 문자열에 변화가 필요한 순간, StringBuffer로 변환해준다
+		3. StringBuffer을 이용해서 문자열 변화를 시도한다
+		4. 문자열 변화가 종료되면 다시 사용이 편리한 String 타입으로 변환한다	
+			
+			> 예 ) String str = "홍";
+				   StringBuffer buff = new StringBuffer(str);
+				   str.append("gildong");
+				   str = buff.toString();
+				   
+		   
+StringTokenizer
+
+			String str = "홍길동,010-1111-1111,16,대장";
+			String tmp = str;
+			for(int i = 0 ; i < str.length() ; i++) {
+				if(str.charAt(i) == ',') {
+					cnt = cnt + 1;
+				}
+			} 
+		
+			 cnt += 1;
+			 
+			 String[] arr = new String[cnt];
+			 for(int i = 0 ; i < tmp.length() ; i++) {
+			 	if(str.charAt(i) == ',') {
+			 		arr[idx] = str.substring(0, i);
+			 		idx++;
+			 		tmp = tmp.substring(0, i);
+		 		}
+			 } 
+			 
+	위처럼 복잡한 작업을 편하게 해주는 클래스이다
+		> 하나의 문자열을 원하는 문자를 중심으로 나누어주는 기능을 가진 클래스
+		> 사용이유 ) 네트워크 등을 이용하면 여러개의 데이터가 한번에 들어온다		
+
+	생성방법 ) 
+		1. StringTokenizer(String str)
+			> 문자열을 공백 기준으로 나누는 기능
+		2. StringTokenizer(String str, String delim)
+			> 문자열을 지정문자 기준으로 나누는 기능
+		3. StringTokenizer(String str, String delim, boolean returnDelims)
+			> 2 + 구분문자 포함
+			
+	문제점 ) 분리된 문자는 임시버퍼(스텍)에 기억된다
+			 따라서, 한번 사용하면 더 이상 사용할 수 없게 되며 
+			 반드시 순서대로만 꺼내야한다
+			 
+	주요함수 )
+		countTokens() : 나눠진 결과수를 반환
+		hasMoreElements(),  hasMoreTokens() : 아직 임시버퍼에 결과가 남아있는지 확인하는 함수. 반환값은 T/F
+		nextElements(), nextToken() : 임시버퍼에서 데이터를 꺼내는 함수
+										> nextElements() : Object 타입으로 반환
+										> nextToken() : 문자열로 반환
